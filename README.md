@@ -4,6 +4,8 @@
 
 ## ✨ Demo
 
+![result](./result.png)
+
 ## 🚀 Usage
 
 ```
