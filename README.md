@@ -2,9 +2,9 @@
 
 `minecraft clone` is able to show you that `Ursina` makes yours coding life more exciting.
 
-# ✨ Demo
+## ✨ Demo
 
-# 🚀 Usage
+## 🚀 Usage
 
 ```
 git clone https://github.com/yoonhero/minecraft_clone
@@ -16,3 +16,8 @@ And Install PiP Requirements
 pip install -r requirements.txt
 ```
 
+Run And Edit Code!! Make your World!
+
+```
+python3 main.py 
+```
