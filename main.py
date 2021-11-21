@@ -71,11 +71,11 @@ class Voxel(Button):
             elif key == "right mouse down":
                 destroy(self)
     
-    def update(self):
-        # if player further from block
-        if self.x < player.x - 10:
-            if self.z < player.z - 10:
-                destroy(self)
+    # def update(self):
+    #     # if player further from block
+    #     if self.x < player.x - 10:
+    #         if self.z < player.z - 10:
+    #             destroy(self)
 
 
 def randomSpawn(freq):
@@ -83,7 +83,7 @@ def randomSpawn(freq):
         return True
     return False
 
-noise = PerlinNoise(octaves=3, seed=2021)
+noise = PerlinNoise(octaves=3, seed=random.randrange(1, 10000000000000000000000000000))
 shells = []
 
 def updateMap(x, z, amp=0):
@@ -101,17 +101,17 @@ def updateMap(x, z, amp=0):
 for z in range(20):
 
     for x in range(20):
-        updateMap(x, z, 0)
         # random height
         height = .25 + noise([x/24, z/24])
         height = math.floor(height * 7)
         
+        instantShells = []
         # randomly landscape 
         if height >= 0:
             for y in range(height+1):
                 voxel = Voxel(position=(x, y, z))
-                if y == height:
-                    shells.append(voxel)
+                # if y == height:
+                instantShells.append(voxel)
                     
                     # original = shells[x]
                     # if original == None:
@@ -120,50 +120,32 @@ for z in range(20):
         else:
             # water 
             voxel = Voxel(position=(x, 0, z))
+            instantShells.append(voxel)
+        
+        shells.append(instantShells)
 
-
-amp = 4
+amp = 6
 
 # infinite terrian
-def generateMoreBlock(amp):
+def generateMoreBlock():
     shellWidth = 20
-    freq = 24
-    for i in range(len(shells)):
-    	shells[i].x = floor((i/shellWidth) + player.x - 0.5*shellWidth)
-		shells[i].z = floor((i%shellWidth) + player.z - 0.5*shellWidth)
-		shells[i].y = floor(noise([x/freq, z/freq])*amp)
-
+    # for i in range(len(shells)):
+    #     for shell in shells[i]:
+    #         shell.x = floor((i/shellWidth) + player.x - 0.5*shellWidth)
+    #         shell.z = floor((i%shellWidth) + player.z - 0.5*shellWidth)
+        
 
 def update():
-    global map
+    if player.y < -3:
+    		player.y = 10
+      
     if held_keys["left mouse"] or held_keys["right mouse"]:
         punch.play()
         hand.position = Vec2(0.4, -0.5)
     else:
         hand.position = Vec2(0.6, -0.6)
 
-    current_position = [player.x, player.z]
-    
-    if current_position[0] < map[0] + amp:
-        map[0] = math.ceil(current_position[0]) - amp
-        # create more block
-        generateMoreBlock(amp)
-        
-    elif current_position[0] > map[1] - amp:
-        map[1] = math.ceil(current_position[0]) + amp
-        # craete more blocks
-        generateMoreBlock(amp)
-        
-    if current_position[1] < map[2] + amp:
-        map[2] = math.ceil(current_position[1]) - amp
-        # create more block
-        generateMoreBlock( amp)
-        
-    elif current_position[1] > map[3] - amp:
-        map[3] = math.ceil(current_position[1]) + amp
-        # craete more blocks
-        generateMoreBlock(amp)
-    
+    generateMoreBlock()
     
 
         
