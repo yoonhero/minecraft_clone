@@ -1,6 +1,8 @@
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
-
+import random
+import math
+from perlin_noise import PerlinNoise
 
 app = Ursina()
 
@@ -71,10 +73,16 @@ class Voxel(Button):
                 Voxel(position=self.position + mouse.normal, texture=blocks[block_id])
             elif key == "right mouse down":
                 destroy(self)
-        
+                
+noise = PerlinNoise(octaves=3, seed=1002000)
+
 for z in range(20):
     for x in range(20):
-        voxel = Voxel(position=(x, 0,z))
+        # random height
+        height = .25 + noise([x/20, z/20])
+        
+        # randomly landscape 
+        voxel = Voxel(position=(x, height, z))
 
 player = FirstPersonController()
         
