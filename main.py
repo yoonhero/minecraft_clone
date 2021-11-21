@@ -105,13 +105,15 @@ for z in range(20):
         height = .25 + noise([x/24, z/24])
         height = math.floor(height * 7)
         
-        instantShells = []
         # randomly landscape 
         if height >= 0:
-            for y in range(height+1):
-                voxel = Voxel(position=(x, y, z))
-                # if y == height:
-                instantShells.append(voxel)
+            voxel = Voxel(position=(x, height, z))
+            shells.append(voxel)
+            # for y in range(height+1):
+            #     voxel = Voxel(position=(x, y, z))
+            #     if y == height:
+            #         shells.append(voxel)
+                # instantShells.append(voxel)
                     
                     # original = shells[x]
                     # if original == None:
@@ -120,23 +122,24 @@ for z in range(20):
         else:
             # water 
             voxel = Voxel(position=(x, 0, z))
-            instantShells.append(voxel)
+            shells.append(voxel)
         
-        shells.append(instantShells)
+        # shells.append(instantShells)
 
 amp = 6
 
 # infinite terrian
 def generateMoreBlock():
     shellWidth = 20
-    # for i in range(len(shells)):
-    #     for shell in shells[i]:
-    #         shell.x = floor((i/shellWidth) + player.x - 0.5*shellWidth)
-    #         shell.z = floor((i%shellWidth) + player.z - 0.5*shellWidth)
+    for i in range(len(shells)):
+        shell = shells[i]
+        shell.x = floor((i/shellWidth) + player.x - 0.5*shellWidth)
+        shell.z = floor((i%shellWidth) + player.z - 0.5*shellWidth)
+        shell.y = floor(noise([shell.x/24, shell.z/24])*amp)
         
 
 def update():
-    if player.y < -3:
+    if player.y < -30:
     		player.y = 10
       
     if held_keys["left mouse"] or held_keys["right mouse"]:
