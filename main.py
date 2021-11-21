@@ -74,16 +74,20 @@ class Voxel(Button):
             elif key == "right mouse down":
                 destroy(self)
                 
-noise = PerlinNoise(octaves=3, seed=1002000)
+noise = PerlinNoise(octaves=3, seed=2021)
 
 for z in range(20):
     for x in range(20):
         # random height
         height = .25 + noise([x/20, z/20])
+        height = math.floor(height * 7)
         
         # randomly landscape 
-        voxel = Voxel(position=(x, height, z))
-
+        if height >= 0:
+            for y in range(height+1):
+                voxel = Voxel(position=(x, y, z))
+        else:
+            voxel = Voxel(position=(x, 0, z), texture=blocks[random.randint(0,len(blocks)-1)])
 player = FirstPersonController()
         
 app.run()   
