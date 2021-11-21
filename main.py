@@ -53,7 +53,8 @@ hand = Entity(
 player = FirstPersonController()
 
 class Voxel(Button):
-    def __init__(self, position=(0, 0, 0), texture="assets/grass.png"):
+    def __init__(self, position=(0, 0, 0), texture="assets/grass.png", tree=False):
+        self.tree = tree
         super().__init__(
             parent=scene,
             position=position,
@@ -71,12 +72,34 @@ class Voxel(Button):
             elif key == "right mouse down":
                 destroy(self)
     
-    # def update(self):
-    #     # if player further from block
-    #     if self.x < player.x - 10:
-    #         if self.z < player.z - 10:
-    #             destroy(self)
+    def update(self):
+        # if player further from tree block
+        if self.tree:
+            if self.x < player.x - 7 or self.x > player.x+7:
+                if self.z < player.z - 7 or self.z > player.z+7:
+                    destroy(self)
 
+# craete Tree
+class Tree(Button):
+    def __init__(self, position=[0, 0, 0], treeHeight=6):
+        self.position = [position[0], position[2]]
+        for h in range(0, treeHeight-2):
+            height = position[1]
+            Voxel(position=(position[0], height + h, position[2]), texture=blocks[2], tree=True)
+        
+        for y in range(0, 2):
+            height = position[1] + treeHeight - 2
+            for x in range(0,2-y):
+                for z in range(0,2-y):
+                    Voxel(position=(position[0]+x, height+y, position[2]+z), tree=True)
+                    Voxel(position=(position[0]-x, height+y, position[2]-z), tree=True)
+                    Voxel(position=(position[0]-x, height+y, position[2]+z), tree=True)
+                    Voxel(position=(position[0]+x, height+y, position[2]-z), tree=True)
+    def update(self):
+        # if player further from tree
+        if self.position[0] < player.x - 10:
+            if self.position[1] < player.z - 10:
+                destroy(self)
 
 def randomSpawn(freq):
     if math.ceil(math.random() * freq) == math.ceil(freq / 2):
@@ -84,26 +107,20 @@ def randomSpawn(freq):
     return False
 
 noise = PerlinNoise(octaves=3, seed=random.randrange(1, 10000000000000000000000000000))
+
 shells = []
 
-def updateMap(x, z, amp=0):
-    global map
-    if map[2] >= z + amp:
-        map[2] = z
-    elif map[3] <= z - amp:
-        map[3] = z
-    if map[0] >= x + amp:
-        map[0] = x
-    elif map[1] <= x - amp:
-        map[1] = x
+amp = 6
+freq = 24
+shellWidth = 20
 
 # make 20*20 block
-for z in range(20):
+for z in range(shellWidth):
 
-    for x in range(20):
+    for x in range(shellWidth):
         # random height
-        height = .25 + noise([x/24, z/24])
-        height = math.floor(height * 7)
+        height = .25 + noise([x/freq, z/freq])
+        height = math.floor(height * amp)
         
         # randomly landscape 
         if height >= 0:
@@ -126,19 +143,21 @@ for z in range(20):
         
         # shells.append(instantShells)
 
-amp = 6
 
 # infinite terrian
 def generateMoreBlock():
-    shellWidth = 20
+    global amp, freq, shellWidth
+    
     for i in range(len(shells)):
         shell = shells[i]
         shell.x = floor((i/shellWidth) + player.x - 0.5*shellWidth)
         shell.z = floor((i%shellWidth) + player.z - 0.5*shellWidth)
-        shell.y = floor(noise([shell.x/24, shell.z/24])*amp)
+        shell.y = floor(noise([shell.x/freq, shell.z/freq])*amp)
         
+Tree(position=[3,0,4])
 
 def update():
+    # when player falling
     if player.y < -30:
     		player.y = 10
       
