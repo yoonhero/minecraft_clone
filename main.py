@@ -102,7 +102,7 @@ class Tree(Button):
                 destroy(self)
 
 def randomSpawn(freq):
-    if math.ceil(math.random() * freq) == math.ceil(freq / 2):
+    if math.ceil(random.random() * freq) == math.ceil(freq / 2):
         return True
     return False
 
@@ -143,6 +143,7 @@ for z in range(shellWidth):
         
         # shells.append(instantShells)
 
+treeFreq = 100
 
 # infinite terrian
 def generateMoreBlock():
@@ -154,6 +155,10 @@ def generateMoreBlock():
         shell.z = floor((i%shellWidth) + player.z - 0.5*shellWidth)
         shell.y = floor(noise([shell.x/freq, shell.z/freq])*amp)
         
+        
+        
+        
+# create Tree        
 Tree(position=[3,0,4])
 
 def update():
@@ -169,6 +174,8 @@ def update():
 
     generateMoreBlock()
     
+    # if randomSpawn(treeFreq):
+    #         Tree(position=[shell.x, shell.y, shell.z])
 
         
     
