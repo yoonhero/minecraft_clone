@@ -71,6 +71,7 @@ class Voxel(Button):
                 Voxel(position=self.position + mouse.normal, texture=blocks[block_id])
             elif key == "right mouse down":
                 destroy(self)
+                shells.pop()
     
     def update(self):
         # if player further from tree block
@@ -111,7 +112,7 @@ noise = PerlinNoise(octaves=3, seed=random.randrange(1, 100000000000000000000000
 shells = []
 
 amp = 6
-freq = 24
+freq = 24                                                                                                                          
 shellWidth = 20
 
 # make 20*20 block
@@ -148,13 +149,19 @@ treeFreq = 100
 # infinite terrian
 def generateMoreBlock():
     global amp, freq, shellWidth
-    
-    for i in range(len(shells)):
-        shell = shells[i]
-        shell.x = floor((i/shellWidth) + player.x - 0.5*shellWidth)
-        shell.z = floor((i%shellWidth) + player.z - 0.5*shellWidth)
-        shell.y = floor(noise([shell.x/freq, shell.z/freq])*amp)
-        
+    if len(shells) == shellWidth**2:
+        for i in range(len(shells)):
+            try: 
+                shell = shells[i]
+                shell.x = floor((i/shellWidth) + player.x - 0.5*shellWidth)
+                shell.z = floor((i%shellWidth) + player.z - 0.5*shellWidth)
+                shell.y = floor(noise([shell.x/freq, shell.z/freq])*amp)
+            except:
+                continue
+    else:
+        while len(shells) != shellWidth**2:
+            voxel = Voxel(position=(0, 0, 0)) 
+            shells.append(voxel)
         
         
         
